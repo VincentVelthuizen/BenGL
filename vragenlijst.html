@@ -114,7 +114,26 @@
       color: var(--green-dark);
       margin-bottom: 14px;
       font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
     }
+    .btn-copy {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      background: #fff;
+      border: 1px solid var(--green);
+      border-radius: 50px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-copy:hover { background: var(--green-light); }
+    .copy-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
     /* ── Fields ── */
     .field { margin-bottom: 14px; }
@@ -146,7 +165,12 @@
     textarea { min-height: 80px; resize: vertical; }
 
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+    /* On mobile, stack as a normal block so every field uses the same 14px rhythm
+       (grid gap + field margins would otherwise make pairs sit closer than the rest). */
+    @media (max-width: 500px) {
+      .two-col { display: block; }
+      .two-col > .field { margin-bottom: 14px; }
+    }
 
     /* ── Radio / checkbox ── */
     .radio-group {
@@ -190,15 +214,40 @@
     /* ── Siblings ── */
     .sibling-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 8px;
-      align-items: flex-end;
+      align-items: center;
     }
-    .sibling-row .sib-name { flex: 1; }
-    .sibling-row .sib-dob { width: 160px; flex-shrink: 0; }
-    @media (max-width: 420px) {
-      .sibling-row { flex-direction: column; }
-      .sibling-row .sib-dob { width: 100%; }
+    .sibling-row .field { margin-bottom: 0; }
+    /* name + date share the space; the × stays a separate, fixed column so it never wraps */
+    .sib-fields {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      gap: 10px;
+    }
+    .sib-fields .sib-name { flex: 1 1 auto; min-width: 0; }
+    .sib-fields .sib-dob  { flex: 0 0 165px; }
+    .sib-remove {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #f3f4f6;
+      color: #9ca3af;
+      font-size: 1.3rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .sib-remove:hover { background: #fde8e8; color: #c0392b; border-color: #e6b0b0; }
+    #addSibling { margin-top: 4px; }
+    /* iOS shrinks date inputs to almost no height once appearance is reset — pin a height */
+    input[type=date] { min-height: 42px; }
+    @media (max-width: 480px) {
+      .sib-fields { flex-direction: column; }
+      .sib-fields .sib-dob { flex: 1 1 auto; }
     }
 
     /* ── Actions ── */
@@ -378,7 +427,10 @@
       <div class="section-title">Gegevens betreffende het gezin en de gezinssamenstelling</div>
 
       <div class="subsection">
-        <div class="subsection-title">Moeder / verzorgster</div>
+        <div class="subsection-title">
+          <span>Ouder / verzorger 1</span>
+          <button type="button" class="btn-copy" data-copy-source="kind" data-copy-target="moeder">Zelfde adres als kind</button>
+        </div>
         <div class="two-col">
           <div class="field">
             <label for="moeder_roepnaam">Roepnaam</label>
@@ -430,7 +482,13 @@
       </div>
 
       <div class="subsection">
-        <div class="subsection-title">Vader / verzorger</div>
+        <div class="subsection-title">
+          <span>Ouder / verzorger 2</span>
+          <span class="copy-btns">
+            <button type="button" class="btn-copy" data-copy-source="kind" data-copy-target="vader">Zelfde adres als kind</button>
+            <button type="button" class="btn-copy" data-copy-source="moeder" data-copy-target="vader">Zelfde adres als ouder 1</button>
+          </span>
+        </div>
         <div class="two-col">
           <div class="field">
             <label for="vader_roepnaam">Roepnaam</label>
@@ -483,28 +541,8 @@
 
       <div class="field">
         <label>Broers / zussen — naam en geboortedatum</label>
-        <div id="siblings">
-          <div class="sibling-row">
-            <div class="field sib-name"><label>Naam</label><input type="text" name="sibling_naam_1"></div>
-            <div class="field sib-dob"><label>Geboortedatum</label><input type="date" name="sibling_geb_1"></div>
-          </div>
-          <div class="sibling-row">
-            <div class="field sib-name"><input type="text" name="sibling_naam_2" placeholder="Naam"></div>
-            <div class="field sib-dob"><input type="date" name="sibling_geb_2"></div>
-          </div>
-          <div class="sibling-row">
-            <div class="field sib-name"><input type="text" name="sibling_naam_3" placeholder="Naam"></div>
-            <div class="field sib-dob"><input type="date" name="sibling_geb_3"></div>
-          </div>
-          <div class="sibling-row">
-            <div class="field sib-name"><input type="text" name="sibling_naam_4" placeholder="Naam"></div>
-            <div class="field sib-dob"><input type="date" name="sibling_geb_4"></div>
-          </div>
-          <div class="sibling-row">
-            <div class="field sib-name"><input type="text" name="sibling_naam_5" placeholder="Naam"></div>
-            <div class="field sib-dob"><input type="date" name="sibling_geb_5"></div>
-          </div>
-        </div>
+        <div id="siblings"></div>
+        <button type="button" id="addSibling" class="btn btn-secondary">+ Broer / zus toevoegen</button>
       </div>
 
       <div class="field">
@@ -1277,6 +1315,94 @@ function restoreData(data) {
   }
 }
 
+// ── Siblings: dynamic add / remove ────────────────────────────────
+let nextSiblingIndex = 1;
+
+function makeSiblingRow(index) {
+  nextSiblingIndex = Math.max(nextSiblingIndex, index + 1);
+  const row = document.createElement('div');
+  row.className = 'sibling-row';
+  row.innerHTML =
+    `<div class="sib-fields">` +
+      `<div class="field sib-name"><input type="text" name="sibling_naam_${index}" placeholder="Naam" aria-label="Naam broer / zus"></div>` +
+      `<div class="field sib-dob"><input type="date" name="sibling_geb_${index}" aria-label="Geboortedatum"></div>` +
+    `</div>` +
+    `<button type="button" class="sib-remove" aria-label="Verwijder broer / zus" title="Verwijderen">&times;</button>`;
+  row.querySelector('.sib-remove').addEventListener('click', () => {
+    row.remove();
+    // Always keep at least one row so the section is never empty.
+    if (!document.querySelector('#siblings .sibling-row')) addSiblingRow();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+    updateProgress();
+  });
+  document.getElementById('siblings').appendChild(row);
+  return row;
+}
+
+function addSiblingRow() {
+  return makeSiblingRow(nextSiblingIndex);
+}
+
+document.getElementById('addSibling').addEventListener('click', () => {
+  const row = addSiblingRow();
+  row.querySelector('input').focus();
+  updateProgress();
+});
+
+// Build rows from saved data (preserving original indices) or one empty row.
+function buildSiblings(data) {
+  const indices = data
+    ? Object.keys(data)
+        .map(k => { const m = k.match(/^sibling_naam_(\d+)$/); return m ? +m[1] : null; })
+        .filter(i => i !== null)
+        .sort((a, b) => a - b)
+    : [];
+  if (indices.length === 0) { addSiblingRow(); return; }
+  indices.forEach(i => makeSiblingRow(i));
+}
+
+// ── "Zelfde adres als …" — copy address fields between persons ────
+document.querySelectorAll('[data-copy-target]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const { copySource, copyTarget } = btn.dataset;
+    const form = document.getElementById('vragenlijst');
+    ['adres', 'postcode', 'woonplaats'].forEach(f => {
+      const src = form.elements[copySource + '_' + f], dst = form.elements[copyTarget + '_' + f];
+      if (src && dst) dst.value = src.value;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+    updateProgress();
+    showToast('Adres overgenomen.');
+  });
+});
+
+// ── Accessibility: expose radio/checkbox questions as labelled groups ──
+(function labelGroups() {
+  let n = 0;
+  // Standard fields: a question <label> followed by a .radio-group / .check-list
+  document.querySelectorAll('#vragenlijst .field').forEach(field => {
+    const group = field.querySelector('.radio-group, .check-list');
+    if (!group) return;
+    group.setAttribute('role', group.classList.contains('check-list') ? 'group' : 'radiogroup');
+    const label = field.querySelector(':scope > label');
+    if (label) {
+      if (!label.id) label.id = 'grouplbl_' + (++n);
+      group.setAttribute('aria-labelledby', label.id);
+    }
+  });
+  // Sensitivity rows: a .gev-q question span next to a .radio-group
+  document.querySelectorAll('#vragenlijst .gev-row').forEach(row => {
+    const group = row.querySelector('.radio-group');
+    const q = row.querySelector('.gev-q');
+    if (!group) return;
+    group.setAttribute('role', 'radiogroup');
+    if (q) {
+      if (!q.id) q.id = 'gevlbl_' + (++n);
+      group.setAttribute('aria-labelledby', q.id);
+    }
+  });
+})();
+
 // ── Build readable text from the form ─────────────────────────────
 const GEV_LABELS = {
   gev_schrikken:'Schrikt het snel?', gev_standje:'Heeft het moeite met een standje?',
@@ -1300,6 +1426,12 @@ function yesno(v) {
   return {ja:'Ja', nee:'Nee', soms:'Soms', nvt:'N.v.t.', dhr:'Dhr.', mw:'Mw.'}[v] || v || '—';
 }
 
+// Turn an ISO date (yyyy-mm-dd) into dd-mm-jjjj for readable output.
+function fmtDate(v) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : (v || '');
+}
+
 function formatAnswers() {
   const d = collectData();
   const L = [];
@@ -1321,30 +1453,36 @@ function formatAnswers() {
   // 1. Kind
   hdr('Gegevens betreffende het kind');
   row('Voornaam/namen', d.kind_voornaam); row('Roepnaam', d.kind_roepnaam);
-  row('Achternaam', d.kind_achternaam); row('Geboortedatum', d.kind_geboortedatum);
+  row('Achternaam', d.kind_achternaam); row('Geboortedatum', fmtDate(d.kind_geboortedatum));
   row('BSN', d.kind_bsn); row('Adres', d.kind_adres);
   row('Postcode', d.kind_postcode); row('Woonplaats', d.kind_woonplaats);
   row('Telefoon', d.kind_telefoon); row('E-mail', d.kind_email);
 
   // 2. Gezin
   hdr('Gegevens betreffende het gezin');
-  sub('Moeder / verzorgster');
+  sub('Ouder / verzorger 1');
   row('Roepnaam', d.moeder_roepnaam); row('Achternaam', d.moeder_achternaam);
-  row('Geboortedatum', d.moeder_geboortedatum); row('Adres', d.moeder_adres);
+  row('Geboortedatum', fmtDate(d.moeder_geboortedatum)); row('Adres', d.moeder_adres);
   row('Postcode', d.moeder_postcode); row('Woonplaats', d.moeder_woonplaats);
   row('Telefoon', d.moeder_telefoon); row('Mobiel', d.moeder_mobiel);
   row('E-mail', d.moeder_email); row('Opleiding + Beroep', d.moeder_opleiding);
-  sub('Vader / verzorger');
+  sub('Ouder / verzorger 2');
   row('Roepnaam', d.vader_roepnaam); row('Achternaam', d.vader_achternaam);
-  row('Geboortedatum', d.vader_geboortedatum); row('Adres', d.vader_adres);
+  row('Geboortedatum', fmtDate(d.vader_geboortedatum)); row('Adres', d.vader_adres);
   row('Postcode', d.vader_postcode); row('Woonplaats', d.vader_woonplaats);
   row('Telefoon', d.vader_telefoon); row('Mobiel', d.vader_mobiel);
   row('E-mail', d.vader_email); row('Opleiding + Beroep', d.vader_opleiding);
   sub('Broers / zussen');
-  for (let i = 1; i <= 5; i++) {
+  const sibIndices = Object.keys(d)
+    .map(k => { const m = k.match(/^sibling_naam_(\d+)$/); return m ? +m[1] : null; })
+    .filter(i => i !== null)
+    .sort((a, b) => a - b);
+  let sibShown = 0;
+  for (const i of sibIndices) {
     const n = d['sibling_naam_' + i], g = d['sibling_geb_' + i];
-    if (n || g) row(`Kind ${i}`, `${n || '—'}  (geb. ${g || '—'})`);
+    if (n || g) row(`Kind ${++sibShown}`, `${n || '—'}  (geb. ${fmtDate(g) || '—'})`);
   }
+  if (sibShown === 0) row('Kind 1', '—  (geb. —)');
   sub('Gezinssamenstelling');
   ta('Beschrijving', d.gezinssamenstelling);
   sub('In geval van scheiding');
@@ -1499,7 +1637,7 @@ function formatAnswers() {
   hdr('Verwijzing');
   row('Verwezen door / aanraden van', d.verwijzing_door);
   row('Plaats', d.verwijzing_plaats);
-  row('Datum', d.verwijzing_datum);
+  row('Datum', fmtDate(d.verwijzing_datum));
 
   L.push('', hr(), 'Hartelijk dank voor het invullen van de lijst.');
   L.push('Met de gegevens wordt zorgvuldig omgegaan conform de beroepscode.');
@@ -1597,13 +1735,22 @@ function showToast(msg) {
 
 // ── Progress bar ──────────────────────────────────────────────────
 function updateProgress() {
-  const inputs = [...document.getElementById('vragenlijst')
-    .querySelectorAll('input:not([type=radio]):not([type=checkbox]),textarea')];
-  const filled = inputs.filter(el => el.value.trim() !== '').length;
-  const pct    = inputs.length ? Math.round((filled / inputs.length) * 100) : 0;
+  const form = document.getElementById('vragenlijst');
+  // Text fields + textareas: each counts as one field.
+  const textInputs = [...form.querySelectorAll('input:not([type=radio]):not([type=checkbox]),textarea')];
+  let total  = textInputs.length;
+  let filled = textInputs.filter(el => el.value.trim() !== '').length;
+  // Radio groups: each named group counts once, filled when an option is chosen.
+  const radioNames = new Set();
+  form.querySelectorAll('input[type=radio]').forEach(r => radioNames.add(r.name));
+  radioNames.forEach(name => {
+    total++;
+    if (form.querySelector(`input[type=radio][name="${name}"]:checked`)) filled++;
+  });
+  const pct = total ? Math.round((filled / total) * 100) : 0;
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent =
-    `${pct}% ingevuld (${filled} van ${inputs.length} tekstvelden)`;
+    `${pct}% ingevuld (${filled} van ${total} velden)`;
 }
 
 // ── Auto-save (debounced) ─────────────────────────────────────────
@@ -1621,20 +1768,23 @@ document.getElementById('vragenlijst').addEventListener('change', updateProgress
 document.addEventListener('DOMContentLoaded', () => {
   const params  = new URLSearchParams(location.search);
   const encoded = params.get('data');
+  let data = null, msg = '';
   if (encoded) {
     try {
-      restoreData(JSON.parse(decodeURIComponent(escape(atob(encoded)))));
-      showToast('Uw opgeslagen antwoorden zijn geladen vanuit de link.');
+      data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+      msg = 'Uw opgeslagen antwoorden zijn geladen vanuit de link.';
     } catch { /* corrupt param — ignore */ }
   } else {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        restoreData(JSON.parse(saved));
-        showToast('Uw eerdere antwoorden zijn hersteld.');
+        data = JSON.parse(saved);
+        msg = 'Uw eerdere antwoorden zijn hersteld.';
       } catch { /* corrupt storage — ignore */ }
     }
   }
+  buildSiblings(data);          // create sibling rows first so they can be filled
+  if (data) { restoreData(data); showToast(msg); }
   updateProgress();
 });
 </script>
