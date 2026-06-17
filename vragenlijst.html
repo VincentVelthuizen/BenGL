@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vragenlijst voor ouders – Bewegen en Groeien met Lucette</title>
+  <style>
+    :root {
+      --green: #5b8a6e;
+      --green-light: #eef7f2;
+      --green-dark: #3a5f4a;
+      --border: #d1d5db;
+      --text: #2d3748;
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: #f0f4f1;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      background: #fff;
+      border-bottom: 3px solid var(--green);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .site-header img { max-height: 90px; max-width: 280px; }
+    .logo-fallback { display: none; }
+    .logo-fallback h1 {
+      font-size: 1.4rem;
+      color: var(--green-dark);
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .logo-fallback p { font-size: 0.85rem; color: var(--green); margin-top: 2px; }
+
+    /* ── Sticky progress ── */
+    .progress-bar-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 20px;
+    }
+    .progress-track {
+      max-width: 780px;
+      margin: 0 auto;
+      background: var(--green-light);
+      border-radius: 10px;
+      height: 7px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      max-width: 780px;
+      margin: 4px auto 0;
+      font-size: 0.78rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    /* ── Layout ── */
+    .form-wrap {
+      max-width: 780px;
+      margin: 28px auto 60px;
+      padding: 0 16px;
+    }
+    .intro-card {
+      background: #fff;
+      border-left: 4px solid var(--green);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+      color: #4b5563;
+    }
+    .intro-card strong { color: var(--text); }
+
+    /* ── Sections ── */
+    .section {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      border-bottom: 2px solid var(--green-light);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .subsection {
+      background: var(--green-light);
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .subsection-title {
+      font-weight: 600;
+      color: var(--green-dark);
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .field > label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    input[type=text], input[type=email], input[type=tel], input[type=date], textarea, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .15s;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(91,138,110,.12);
+    }
+    textarea { min-height: 80px; resize: vertical; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── Radio / checkbox ── */
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 20px;
+      margin-top: 6px;
+    }
+    .radio-group label, .check-list label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 400;
+      font-size: 0.92rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+    input[type=radio], input[type=checkbox] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--green);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .check-list { display: flex; flex-direction: column; gap: 9px; margin-top: 8px; }
+
+    /* ── Sensitivity row ── */
+    .gev-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      flex-wrap: wrap;
+    }
+    .gev-row:last-child { border-bottom: none; }
+    .gev-row .gev-q { flex: 1; font-size: 0.88rem; min-width: 180px; }
+    .gev-row .radio-group { flex-shrink: 0; }
+
+    /* ── Siblings ── */
+    .sibling-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+      align-items: flex-end;
+    }
+    .sibling-row .sib-name { flex: 1; }
+    .sibling-row .sib-dob { width: 160px; flex-shrink: 0; }
+    @media (max-width: 420px) {
+      .sibling-row { flex-direction: column; }
+      .sibling-row .sib-dob { width: 100%; }
+    }
+
+    /* ── Actions ── */
+    .actions-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.07);
+      margin-bottom: 18px;
+    }
+    .actions-card h2 { font-size: 1.05rem; color: var(--green-dark); margin-bottom: 8px; }
+    .actions-card p { font-size: 0.88rem; color: #6b7280; margin-bottom: 18px; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-family: inherit;
+      font-weight: 600;
+      transition: background .15s, transform .1s;
+      text-decoration: none;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--green); color: #fff; }
+    .btn-primary:hover { background: var(--green-dark); }
+    .btn-secondary {
+      background: var(--green-light);
+      color: var(--green-dark);
+      border: 1px solid var(--green);
+    }
+    .btn-secondary:hover { background: #d9ede3; }
+    .btn-ghost {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: #e5e7eb; }
+
+    /* ── Link panel ── */
+    .link-panel {
+      display: none;
+      background: var(--green-light);
+      border: 1px solid var(--green);
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    .link-panel.open { display: block; }
+    .link-panel p { font-size: 0.88rem; color: #374151; margin-bottom: 8px; }
+    .link-panel input {
+      margin-bottom: 10px;
+      background: #fff;
+      cursor: text;
+      font-size: 0.82rem;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      background: var(--green-dark);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 999;
+      transition: transform .3s ease;
+      white-space: nowrap;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.82rem;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <!-- Replace logo.png with the actual logo file when available -->
+  <img src="logo.png" alt="Bewegen en Groeien met Lucette"
+       onerror="this.style.display='none';document.querySelector('.logo-fallback').style.display='block'">
+  <div class="logo-fallback">
+    <h1>Bewegen en Groeien met Lucette</h1>
+    <p>BenGL</p>
+  </div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">Begin met invullen…</div>
+</div>
+
+<main class="form-wrap">
+
+  <div class="intro-card">
+    <strong>Vragenlijst voor ouders</strong><br>
+    U hoeft niet alles in één keer in te vullen — uw voortgang wordt automatisch opgeslagen in uw browser.
+    Gebruik de knop onderaan om een link te genereren waarmee u op een ander apparaat of later verder kunt gaan.
+  </div>
+
+  <form id="vragenlijst" novalidate>
+
+    <!-- ════════════════════════════════════════
+         1. GEGEVENS BETREFFENDE HET KIND
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende het kind">
+      <div class="section-title">Gegevens betreffende het kind</div>
+
+      <div class="two-col">
+        <div class="field">
+          <label for="kind_voornaam">Voornaam / namen</label>
+          <input type="text" id="kind_voornaam" name="kind_voornaam">
+        </div>
+        <div class="field">
+          <label for="kind_roepnaam">Roepnaam</label>
+          <input type="text" id="kind_roepnaam" name="kind_roepnaam">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="kind_achternaam">Achternaam</label>
+          <input type="text" id="kind_achternaam" name="kind_achternaam">
+        </div>
+        <div class="field">
+          <label for="kind_geboortedatum">Geboortedatum</label>
+          <input type="date" id="kind_geboortedatum" name="kind_geboortedatum">
+        </div>
+      </div>
+      <div class="field">
+        <label for="kind_bsn">BSN nummer (burgerservicenummer)</label>
+        <input type="text" id="kind_bsn" name="kind_bsn" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="kind_adres">Adres</label>
+        <input type="text" id="kind_adres" name="kind_adres">
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="kind_postcode">Postcode</label>
+          <input type="text" id="kind_postcode" name="kind_postcode">
+        </div>
+        <div class="field">
+          <label for="kind_woonplaats">Woonplaats</label>
+          <input type="text" id="kind_woonplaats" name="kind_woonplaats">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="kind_telefoon">Telefoon</label>
+          <input type="tel" id="kind_telefoon" name="kind_telefoon">
+        </div>
+        <div class="field">
+          <label for="kind_email">E-mail</label>
+          <input type="email" id="kind_email" name="kind_email">
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         2. GEGEVENS BETREFFENDE HET GEZIN
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende het gezin en de gezinssamenstelling">
+      <div class="section-title">Gegevens betreffende het gezin en de gezinssamenstelling</div>
+
+      <div class="subsection">
+        <div class="subsection-title">Moeder / verzorgster</div>
+        <div class="two-col">
+          <div class="field">
+            <label for="moeder_roepnaam">Roepnaam</label>
+            <input type="text" id="moeder_roepnaam" name="moeder_roepnaam">
+          </div>
+          <div class="field">
+            <label for="moeder_achternaam">Achternaam</label>
+            <input type="text" id="moeder_achternaam" name="moeder_achternaam">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="moeder_geboortedatum">Geboortedatum</label>
+            <input type="date" id="moeder_geboortedatum" name="moeder_geboortedatum">
+          </div>
+          <div class="field">
+            <label for="moeder_adres">Adres</label>
+            <input type="text" id="moeder_adres" name="moeder_adres">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="moeder_postcode">Postcode</label>
+            <input type="text" id="moeder_postcode" name="moeder_postcode">
+          </div>
+          <div class="field">
+            <label for="moeder_woonplaats">Woonplaats</label>
+            <input type="text" id="moeder_woonplaats" name="moeder_woonplaats">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="moeder_telefoon">Telefoon</label>
+            <input type="tel" id="moeder_telefoon" name="moeder_telefoon">
+          </div>
+          <div class="field">
+            <label for="moeder_mobiel">Mobiel</label>
+            <input type="tel" id="moeder_mobiel" name="moeder_mobiel">
+          </div>
+        </div>
+        <div class="field">
+          <label for="moeder_email">E-mail</label>
+          <input type="email" id="moeder_email" name="moeder_email">
+        </div>
+        <div class="field">
+          <label for="moeder_opleiding">Opleiding + Beroep</label>
+          <input type="text" id="moeder_opleiding" name="moeder_opleiding">
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Vader / verzorger</div>
+        <div class="two-col">
+          <div class="field">
+            <label for="vader_roepnaam">Roepnaam</label>
+            <input type="text" id="vader_roepnaam" name="vader_roepnaam">
+          </div>
+          <div class="field">
+            <label for="vader_achternaam">Achternaam</label>
+            <input type="text" id="vader_achternaam" name="vader_achternaam">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="vader_geboortedatum">Geboortedatum</label>
+            <input type="date" id="vader_geboortedatum" name="vader_geboortedatum">
+          </div>
+          <div class="field">
+            <label for="vader_adres">Adres</label>
+            <input type="text" id="vader_adres" name="vader_adres">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="vader_postcode">Postcode</label>
+            <input type="text" id="vader_postcode" name="vader_postcode">
+          </div>
+          <div class="field">
+            <label for="vader_woonplaats">Woonplaats</label>
+            <input type="text" id="vader_woonplaats" name="vader_woonplaats">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="vader_telefoon">Telefoon</label>
+            <input type="tel" id="vader_telefoon" name="vader_telefoon">
+          </div>
+          <div class="field">
+            <label for="vader_mobiel">Mobiel</label>
+            <input type="tel" id="vader_mobiel" name="vader_mobiel">
+          </div>
+        </div>
+        <div class="field">
+          <label for="vader_email">E-mail</label>
+          <input type="email" id="vader_email" name="vader_email">
+        </div>
+        <div class="field">
+          <label for="vader_opleiding">Opleiding + Beroep</label>
+          <input type="text" id="vader_opleiding" name="vader_opleiding">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Broers / zussen — naam en geboortedatum</label>
+        <div id="siblings">
+          <div class="sibling-row">
+            <div class="field sib-name"><label>Naam</label><input type="text" name="sibling_naam_1"></div>
+            <div class="field sib-dob"><label>Geboortedatum</label><input type="date" name="sibling_geb_1"></div>
+          </div>
+          <div class="sibling-row">
+            <div class="field sib-name"><input type="text" name="sibling_naam_2" placeholder="Naam"></div>
+            <div class="field sib-dob"><input type="date" name="sibling_geb_2"></div>
+          </div>
+          <div class="sibling-row">
+            <div class="field sib-name"><input type="text" name="sibling_naam_3" placeholder="Naam"></div>
+            <div class="field sib-dob"><input type="date" name="sibling_geb_3"></div>
+          </div>
+          <div class="sibling-row">
+            <div class="field sib-name"><input type="text" name="sibling_naam_4" placeholder="Naam"></div>
+            <div class="field sib-dob"><input type="date" name="sibling_geb_4"></div>
+          </div>
+          <div class="sibling-row">
+            <div class="field sib-name"><input type="text" name="sibling_naam_5" placeholder="Naam"></div>
+            <div class="field sib-dob"><input type="date" name="sibling_geb_5"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="gezinssamenstelling">Beschrijf de gezinssamenstelling en eventuele bijzonderheden (scheiding, combinatiegezin, adoptie, pleegkind enz.)</label>
+        <textarea id="gezinssamenstelling" name="gezinssamenstelling"></textarea>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">In geval van scheiding van de ouders</div>
+        <div class="field">
+          <label for="scheiding_sinds">Sinds wanneer?</label>
+          <input type="text" id="scheiding_sinds" name="scheiding_sinds">
+        </div>
+        <div class="field">
+          <label>Hebben beide ouders het ouderlijk gezag over dit kind?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="ouderlijk_gezag" value="ja"> Ja</label>
+            <label><input type="radio" name="ouderlijk_gezag" value="nee"> Nee</label>
+            <label><input type="radio" name="ouderlijk_gezag" value="nvt"> N.v.t.</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="omgangsregeling">Korte beschrijving van een eventuele omgangsregeling</label>
+          <textarea id="omgangsregeling" name="omgangsregeling"></textarea>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Overlijden</div>
+        <div class="field">
+          <label for="overlijden_wie">Heeft uw gezin te maken gehad met overlijden? Zo ja, wie en wanneer?</label>
+          <textarea id="overlijden_wie" name="overlijden_wie" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="overlijden_relatie">Wat was de relatie met de overledene?</label>
+          <input type="text" id="overlijden_relatie" name="overlijden_relatie">
+        </div>
+        <div class="field">
+          <label>Heeft uw kind de gebeurtenissen rondom het overlijden en de uitvaart meegemaakt?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="overlijden_meegemaakt" value="ja"> Ja</label>
+            <label><input type="radio" name="overlijden_meegemaakt" value="nee"> Nee</label>
+            <label><input type="radio" name="overlijden_meegemaakt" value="nvt"> N.v.t.</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         3. SCHOOL
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende school">
+      <div class="section-title">Gegevens betreffende school</div>
+
+      <div class="two-col">
+        <div class="field">
+          <label for="school_naam">Naam school</label>
+          <input type="text" id="school_naam" name="school_naam">
+        </div>
+        <div class="field">
+          <label for="school_type">Type onderwijs</label>
+          <input type="text" id="school_type" name="school_type" placeholder="bijv. basisonderwijs">
+        </div>
+      </div>
+      <div class="field">
+        <label for="school_adres">Adres / postcode / plaats</label>
+        <input type="text" id="school_adres" name="school_adres">
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="school_telefoon">Telefoon school</label>
+          <input type="tel" id="school_telefoon" name="school_telefoon">
+        </div>
+        <div class="field">
+          <label for="school_groep">Welke groep</label>
+          <input type="text" id="school_groep" name="school_groep">
+        </div>
+      </div>
+      <div class="field">
+        <label for="school_leerkracht">Leerkracht(en)</label>
+        <input type="text" id="school_leerkracht" name="school_leerkracht">
+      </div>
+      <div class="field">
+        <label for="school_groepen">Welke groepen heeft het kind al doorlopen?</label>
+        <input type="text" id="school_groepen" name="school_groepen">
+      </div>
+      <div class="field">
+        <label for="school_wisselingen">Is er sprake geweest van schoolwisselingen? Zo ja, wanneer en om welke reden.</label>
+        <textarea id="school_wisselingen" name="school_wisselingen"></textarea>
+      </div>
+      <div class="field">
+        <label for="school_kind_beleving">Hoe ervaart uw kind de tijd die het op school doorbrengt?</label>
+        <textarea id="school_kind_beleving" name="school_kind_beleving"></textarea>
+      </div>
+      <div class="field">
+        <label for="school_rel_leerkracht">Hoe is de relatie met de leerkracht(en)?</label>
+        <textarea id="school_rel_leerkracht" name="school_rel_leerkracht"></textarea>
+      </div>
+      <div class="field">
+        <label for="school_rel_kinderen">Hoe is de relatie met de andere kinderen?</label>
+        <textarea id="school_rel_kinderen" name="school_rel_kinderen"></textarea>
+      </div>
+      <div class="field">
+        <label for="school_ouder_beleving">Hoe ervaart u hetgeen u meemaakt met betrekking tot uw kind en de school?</label>
+        <textarea id="school_ouder_beleving" name="school_ouder_beleving"></textarea>
+      </div>
+      <div class="field">
+        <label for="school_bijzonderheden">Zijn er nadere bijzonderheden te vermelden met betrekking tot het schoolgaan?</label>
+        <textarea id="school_bijzonderheden" name="school_bijzonderheden"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         4. VRIJE TIJD
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende vrije tijd">
+      <div class="section-title">Gegevens betreffende vrije tijd</div>
+
+      <div class="field">
+        <label for="opvang_wie_waar">Waar en door wie wordt uw kind opgevangen buiten schooltijd? (anders dan door uzelf)</label>
+        <textarea id="opvang_wie_waar" name="opvang_wie_waar" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="opvang_beleving">Hoe ervaart uw kind de opvang?</label>
+        <textarea id="opvang_beleving" name="opvang_beleving"></textarea>
+      </div>
+      <div class="field">
+        <label for="activiteiten">Aan welke activiteiten of (sport)clubs neemt uw kind deel?</label>
+        <textarea id="activiteiten" name="activiteiten"></textarea>
+      </div>
+      <div class="field">
+        <label for="speelwijze">Op welke wijze speelt uw kind? (alleen, samen, binnen, buiten, thuis of bij anderen, etc.)</label>
+        <textarea id="speelwijze" name="speelwijze"></textarea>
+      </div>
+      <div class="field">
+        <label for="vriendjes">Welke vaste vriendjes heeft uw kind en hoe is het contact?</label>
+        <textarea id="vriendjes" name="vriendjes"></textarea>
+      </div>
+      <div class="field">
+        <label for="speelgoed_voorkeur">Aan wat voor soort speelgoed geeft uw kind de voorkeur?</label>
+        <textarea id="speelgoed_voorkeur" name="speelgoed_voorkeur" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="eigen_spullen">Hoe gaat het kind met eigen spullen om? (speelgoed, eigen kamer)</label>
+        <textarea id="eigen_spullen" name="eigen_spullen" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="gezin_activiteiten">Welke gezamenlijke activiteiten zijn er binnen het gezin?</label>
+        <textarea id="gezin_activiteiten" name="gezin_activiteiten"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         5. REDEN VAN AANMELDING
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende de reden van aanmelding">
+      <div class="section-title">Gegevens betreffende de reden van aanmelding</div>
+
+      <!-- Emotioneel -->
+      <div class="subsection">
+        <div class="subsection-title">Emotionele problemen</div>
+        <div class="field">
+          <label>Heeft uw kind emotionele problemen?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="emotioneel" value="ja"> Ja</label>
+            <label><input type="radio" name="emotioneel" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="emotioneel_reden">Zo ja, wat is de reden voor aanmelding? (faalangst, erg gevoelig, verdriet, boosheid, buikpijn, hoofdpijn of iets anders)</label>
+          <textarea id="emotioneel_reden" name="emotioneel_reden"></textarea>
+        </div>
+        <div class="field">
+          <label for="emotioneel_hoe_lang">Hoe lang is er al sprake van deze problematiek?</label>
+          <input type="text" id="emotioneel_hoe_lang" name="emotioneel_hoe_lang">
+        </div>
+        <div class="field">
+          <label for="emotioneel_kind_beleving">Zou u kunnen omschrijven hoe uw kind de problematiek ervaart?</label>
+          <textarea id="emotioneel_kind_beleving" name="emotioneel_kind_beleving"></textarea>
+        </div>
+        <div class="field">
+          <label for="emotioneel_oorzaak">Wat denkt u dat de oorzaak zou kunnen zijn?</label>
+          <textarea id="emotioneel_oorzaak" name="emotioneel_oorzaak"></textarea>
+        </div>
+        <div class="field">
+          <label for="emotioneel_gedaan">Wat heeft u al gedaan aan de problematiek en met welk resultaat?</label>
+          <textarea id="emotioneel_gedaan" name="emotioneel_gedaan"></textarea>
+        </div>
+      </div>
+
+      <!-- Leerproblemen -->
+      <div class="subsection">
+        <div class="subsection-title">Leerproblemen</div>
+        <div class="field">
+          <label>Heeft uw kind leerproblemen?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="leer" value="ja"> Ja</label>
+            <label><input type="radio" name="leer" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="leer_reden">Zo ja, wat is de reden? (lastig lezen, rekenen, spellen, schrijven of iets anders)</label>
+          <textarea id="leer_reden" name="leer_reden"></textarea>
+        </div>
+        <div class="field">
+          <label>Heeft uw kind moeite met klokkijken?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="leer_klok" value="ja"> Ja</label>
+            <label><input type="radio" name="leer_klok" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Heeft het moeite met de dagen van de week en de dagindeling?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="leer_dagen" value="ja"> Ja</label>
+            <label><input type="radio" name="leer_dagen" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Wanneer uw kind leest, zegt het dan wel eens wat anders dan wat er staat, ook al lijkt het op elkaar?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="leer_anders_lezen" value="ja"> Ja</label>
+            <label><input type="radio" name="leer_anders_lezen" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Schrijft het kind letters en cijfers achterstevoren, of mist het letters bij overschrijven?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="leer_achterstevoren" value="ja"> Ja</label>
+            <label><input type="radio" name="leer_achterstevoren" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="leer_hoe_lang">Hoe lang is er al sprake van leerproblematiek?</label>
+          <input type="text" id="leer_hoe_lang" name="leer_hoe_lang">
+        </div>
+        <div class="field">
+          <label for="leer_kind_beleving">Zou u kunnen omschrijven hoe uw kind de problematiek ervaart?</label>
+          <textarea id="leer_kind_beleving" name="leer_kind_beleving"></textarea>
+        </div>
+        <div class="field">
+          <label for="leer_oorzaak">Wat denkt u dat de oorzaak zou kunnen zijn?</label>
+          <textarea id="leer_oorzaak" name="leer_oorzaak"></textarea>
+        </div>
+        <div class="field">
+          <label for="leer_gedaan">Wat is er al gedaan aan de problematiek en met welk resultaat?</label>
+          <textarea id="leer_gedaan" name="leer_gedaan"></textarea>
+        </div>
+        <div class="field">
+          <label for="leer_familie">Komen er binnen de familie leerproblemen voor? Zo ja, welke?</label>
+          <textarea id="leer_familie" name="leer_familie" rows="2"></textarea>
+        </div>
+      </div>
+
+      <!-- Concentratie -->
+      <div class="subsection">
+        <div class="subsection-title">Concentratieproblemen</div>
+        <div class="field">
+          <label>Heeft uw kind concentratieproblemen?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="concentratie" value="ja"> Ja</label>
+            <label><input type="radio" name="concentratie" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="concentratie_reden">Zo ja, wat is de reden? (chaotisch, ongeconcentreerd, kan niet stilzitten, fouten bij overschrijven of iets anders)</label>
+          <textarea id="concentratie_reden" name="concentratie_reden"></textarea>
+        </div>
+        <div class="field">
+          <label for="concentratie_hoe_lang">Hoe lang is er al sprake van deze problematiek?</label>
+          <input type="text" id="concentratie_hoe_lang" name="concentratie_hoe_lang">
+        </div>
+        <div class="field">
+          <label for="concentratie_kind_beleving">Zou u kunnen omschrijven hoe uw kind de problematiek ervaart?</label>
+          <textarea id="concentratie_kind_beleving" name="concentratie_kind_beleving"></textarea>
+        </div>
+        <div class="field">
+          <label for="concentratie_oorzaak">Wat denkt u dat de oorzaak zou kunnen zijn?</label>
+          <textarea id="concentratie_oorzaak" name="concentratie_oorzaak"></textarea>
+        </div>
+        <div class="field">
+          <label for="concentratie_gedaan">Wat heeft u al gedaan aan de problematiek en met welk resultaat?</label>
+          <textarea id="concentratie_gedaan" name="concentratie_gedaan"></textarea>
+        </div>
+        <div class="field">
+          <label for="concentratie_fantasie">Heeft uw kind een levendige fantasie?</label>
+          <textarea id="concentratie_fantasie" name="concentratie_fantasie" rows="2"></textarea>
+        </div>
+        <div class="field">
+          <label for="concentratie_creatief">Is uw kind creatief met ideeën en taal?</label>
+          <textarea id="concentratie_creatief" name="concentratie_creatief" rows="2"></textarea>
+        </div>
+      </div>
+
+      <!-- Beweging -->
+      <div class="subsection">
+        <div class="subsection-title">Bewegingsproblemen</div>
+        <div class="field">
+          <label>Heeft uw kind bewegingsproblemen?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="beweging" value="ja"> Ja</label>
+            <label><input type="radio" name="beweging" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Merkt u het volgende op bij uw kind? (meerdere antwoorden mogelijk)</label>
+          <div class="check-list">
+            <label><input type="checkbox" name="bew_onhandig"> Onhandig</label>
+            <label><input type="checkbox" name="bew_struikelen"> Veel struikelen en vallen</label>
+            <label><input type="checkbox" name="bew_schrijven"> Onleesbaar schrijven</label>
+            <label><input type="checkbox" name="bew_moe"> Snel moe</label>
+            <label><input type="checkbox" name="bew_fietsen"> Laat leren fietsen</label>
+            <label><input type="checkbox" name="bew_zwemmen"> Deed lang over zwemdiploma</label>
+            <label><input type="checkbox" name="bew_gooien"> Moeite met gooien en vangen</label>
+            <label><input type="checkbox" name="bew_hand"> Moeite met kiezen voorkeurshand</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Heeft uw kind last van wagenziekte?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="bew_wagenziekte" value="ja"> Ja</label>
+            <label><input type="radio" name="bew_wagenziekte" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="beweging_hoe_lang">Hoe lang is er al sprake van bewegingsproblematiek?</label>
+          <input type="text" id="beweging_hoe_lang" name="beweging_hoe_lang">
+        </div>
+        <div class="field">
+          <label for="beweging_kind_beleving">Zou u kunnen omschrijven hoe uw kind de problematiek ervaart?</label>
+          <textarea id="beweging_kind_beleving" name="beweging_kind_beleving"></textarea>
+        </div>
+        <div class="field">
+          <label for="beweging_oorzaak">Wat denkt u dat de oorzaak zou kunnen zijn?</label>
+          <textarea id="beweging_oorzaak" name="beweging_oorzaak"></textarea>
+        </div>
+        <div class="field">
+          <label for="beweging_gedaan">Wat heeft u al gedaan aan de problematiek en met welk resultaat?</label>
+          <textarea id="beweging_gedaan" name="beweging_gedaan"></textarea>
+        </div>
+      </div>
+
+      <!-- Lichamelijk -->
+      <div class="subsection">
+        <div class="subsection-title">Lichamelijke problemen</div>
+        <div class="field">
+          <label>Heeft uw kind lichamelijke problemen?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="lichamelijk" value="ja"> Ja</label>
+            <label><input type="radio" name="lichamelijk" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Heeft uw kind buikpijn? Moeite met ontlasting en/of plassen?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="lich_buikpijn" value="ja"> Ja</label>
+            <label><input type="radio" name="lich_buikpijn" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Heeft uw kind hoofdpijn en belemmert het dit in het functioneren?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="lich_hoofdpijn" value="ja"> Ja</label>
+            <label><input type="radio" name="lich_hoofdpijn" value="nee"> Nee</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="lichamelijk_hoe_lang">Hoe lang is er al sprake van deze problematiek?</label>
+          <input type="text" id="lichamelijk_hoe_lang" name="lichamelijk_hoe_lang">
+        </div>
+        <div class="field">
+          <label for="lichamelijk_kind_beleving">Zou u kunnen omschrijven hoe uw kind de problematiek ervaart?</label>
+          <textarea id="lichamelijk_kind_beleving" name="lichamelijk_kind_beleving"></textarea>
+        </div>
+        <div class="field">
+          <label for="lichamelijk_oorzaak">Wat denkt u dat de oorzaak zou kunnen zijn?</label>
+          <textarea id="lichamelijk_oorzaak" name="lichamelijk_oorzaak"></textarea>
+        </div>
+        <div class="field">
+          <label for="lichamelijk_gedaan">Wat heeft u al gedaan aan de problematiek en met welk resultaat?</label>
+          <textarea id="lichamelijk_gedaan" name="lichamelijk_gedaan"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         6. DIAGNOSE
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens over een eventuele diagnose">
+      <div class="section-title">Gegevens over een eventuele diagnose</div>
+
+      <div class="field">
+        <label for="diagnose">Heeft uw kind reeds een diagnose gekregen? (bijv. dyslexie, dyscalculie, dyspraxie, AD(H)D, ASS, …)</label>
+        <textarea id="diagnose" name="diagnose"></textarea>
+      </div>
+      <div class="field">
+        <label for="diagnose_wanneer_wie">Zo ja, wanneer en door wie?</label>
+        <input type="text" id="diagnose_wanneer_wie" name="diagnose_wanneer_wie">
+      </div>
+      <div class="field">
+        <label for="diagnose_medicatie">Heeft uw kind medicatie? Zo ja, welke?</label>
+        <input type="text" id="diagnose_medicatie" name="diagnose_medicatie">
+      </div>
+      <div class="field">
+        <label for="diagnose_therapie">Welke therapie heeft uw kind al gevolgd?</label>
+        <textarea id="diagnose_therapie" name="diagnose_therapie"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         7. GEDRAG EN BELEVING
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens over het gedrag en de beleving van het kind">
+      <div class="section-title">Gegevens over het gedrag en de beleving van het kind</div>
+
+      <div class="field">
+        <label for="gedrag_nieuw">Hoe gaat uw kind om met nieuwe, onbekende situaties?</label>
+        <textarea id="gedrag_nieuw" name="gedrag_nieuw"></textarea>
+      </div>
+      <div class="field">
+        <label for="gedrag_stemming">Hoe is over het algemeen de stemming / het humeur van uw kind?</label>
+        <textarea id="gedrag_stemming" name="gedrag_stemming"></textarea>
+      </div>
+      <div class="field">
+        <label for="gedrag_verlies">Hoe gaat uw kind om met verlies / frustratie?</label>
+        <textarea id="gedrag_verlies" name="gedrag_verlies"></textarea>
+      </div>
+      <div class="field">
+        <label for="gedrag_angst">Is uw kind regelmatig angstig? Zo ja, waarvoor / wanneer?</label>
+        <textarea id="gedrag_angst" name="gedrag_angst"></textarea>
+      </div>
+      <div class="field">
+        <label for="gedrag_creatief">Hoe vindingrijk / creatief is uw kind?</label>
+        <textarea id="gedrag_creatief" name="gedrag_creatief"></textarea>
+      </div>
+      <div class="field">
+        <label for="gedrag_talenten">Welke kwaliteiten / talenten heeft uw kind?</label>
+        <textarea id="gedrag_talenten" name="gedrag_talenten"></textarea>
+      </div>
+      <div class="field">
+        <label for="gedrag_hekel">Waaraan heeft uw kind een (absolute) hekel?</label>
+        <textarea id="gedrag_hekel" name="gedrag_hekel"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         8. ONTWIKKELING
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende de ontwikkeling van uw kind">
+      <div class="section-title">Gegevens betreffende de ontwikkeling van uw kind</div>
+
+      <div class="field">
+        <label for="ontw_zwangerschap">Hoe is de zwangerschap verlopen? Waren er stressmomenten?</label>
+        <textarea id="ontw_zwangerschap" name="ontw_zwangerschap"></textarea>
+      </div>
+      <div class="field">
+        <label>Is er sprake geweest van een afwijkende ligging (bijv. stuitligging) of van te weinig vruchtwater?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ontw_ligging" value="ja"> Ja</label>
+          <label><input type="radio" name="ontw_ligging" value="nee"> Nee</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ontw_bevalling">Hoe is de bevalling verlopen? (snel/lang, spildraai, stuit, navelstreng om de hals, …)</label>
+        <textarea id="ontw_bevalling" name="ontw_bevalling"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_eerste_maanden">Zijn er de eerste maanden problemen geweest? Zijn hiervoor specialisten geraadpleegd?</label>
+        <textarea id="ontw_eerste_maanden" name="ontw_eerste_maanden"></textarea>
+      </div>
+      <div class="field">
+        <label>Is er sprake geweest van refluxklachten?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ontw_reflux" value="ja"> Ja</label>
+          <label><input type="radio" name="ontw_reflux" value="nee"> Nee</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ontw_voorkeur_houding">Had uw kind een voorkeurshouding? Heeft dit geleid tot asymmetrie van het hoofdje?</label>
+        <textarea id="ontw_voorkeur_houding" name="ontw_voorkeur_houding" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_overstrekt">Heeft uw kind overstrekt en zo ja, tot welke leeftijd?</label>
+        <input type="text" id="ontw_overstrekt" name="ontw_overstrekt">
+      </div>
+      <div class="field">
+        <label>Heeft u wel eens een osteopaat bezocht met uw kind?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ontw_osteopaat" value="ja"> Ja</label>
+          <label><input type="radio" name="ontw_osteopaat" value="nee"> Nee</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ontw_temperament">Welk temperament had uw kind als baby?</label>
+        <textarea id="ontw_temperament" name="ontw_temperament" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_voeding_slaap">Hoe was/is uw kind in verband met voeding en slaap? Was het een makkelijke drinker / slaper?</label>
+        <textarea id="ontw_voeding_slaap" name="ontw_voeding_slaap"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_motorisch">Hoe verliep de motorische ontwikkeling? (lopen, fietsen, tekenen, etc.)</label>
+        <textarea id="ontw_motorisch" name="ontw_motorisch"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_kruipen">Heeft uw kind gekropen en zo ja, hoe lang?</label>
+        <input type="text" id="ontw_kruipen" name="ontw_kruipen">
+      </div>
+      <div class="field">
+        <label>Loopt of liep uw kind vaak op de tenen?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ontw_tenen" value="ja"> Ja</label>
+          <label><input type="radio" name="ontw_tenen" value="nee"> Nee</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Heeft uw kind last gehad van oorontstekingen?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ontw_oor" value="ja"> Ja</label>
+          <label><input type="radio" name="ontw_oor" value="nee"> Nee</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ontw_spraak">Hoe verliep de spraak- / taalontwikkeling?</label>
+        <textarea id="ontw_spraak" name="ontw_spraak" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_zindelijk">Hoe verliep de zindelijkheidstraining?</label>
+        <textarea id="ontw_zindelijk" name="ontw_zindelijk" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_seksueel">Hoe verliep de seksuele ontwikkeling en hoe denkt u over seksuele voorlichting?</label>
+        <textarea id="ontw_seksueel" name="ontw_seksueel"></textarea>
+      </div>
+      <div class="field">
+        <label>Heeft uw kind moeite met aankleden?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ontw_aankleden" value="ja"> Ja</label>
+          <label><input type="radio" name="ontw_aankleden" value="nee"> Nee</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ontw_regels">Hoe gaat uw kind om met regels en normen? (wat kan/mag wel en wat niet?)</label>
+        <textarea id="ontw_regels" name="ontw_regels"></textarea>
+      </div>
+      <div class="field">
+        <label for="ontw_vervelend">Heeft uw kind in zijn/haar leven vervelende dingen meegemaakt? (ongelukken, ziekenhuisopnames, ziektes, mishandeling, etc.)</label>
+        <textarea id="ontw_vervelend" name="ontw_vervelend"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         9. SOCIALE ONTWIKKELING
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende de sociale ontwikkeling van het kind">
+      <div class="section-title">Gegevens betreffende de sociale ontwikkeling van het kind</div>
+
+      <div class="field">
+        <label for="sociaal_naasten">Hoe is de omgang met naaste personen? (ouders, broers/zusjes, familie, leerkrachten, oppas)</label>
+        <textarea id="sociaal_naasten" name="sociaal_naasten"></textarea>
+      </div>
+      <div class="field">
+        <label for="sociaal_leeftijdgenoten">Hoe is de omgang met leeftijdgenoten?</label>
+        <textarea id="sociaal_leeftijdgenoten" name="sociaal_leeftijdgenoten"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         10. GEVOELIGHEID
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Gegevens betreffende de gevoeligheid van het kind">
+      <div class="section-title">Gegevens betreffende de gevoeligheid van het kind</div>
+      <p style="font-size:.83rem;color:#6b7280;margin-bottom:16px">Beantwoord met Ja, Nee of Soms.</p>
+
+      <div class="gev-row"><span class="gev-q">Schrikt het snel?</span><div class="radio-group"><label><input type="radio" name="gev_schrikken" value="ja"> Ja</label><label><input type="radio" name="gev_schrikken" value="nee"> Nee</label><label><input type="radio" name="gev_schrikken" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Heeft het moeite met een standje?</span><div class="radio-group"><label><input type="radio" name="gev_standje" value="ja"> Ja</label><label><input type="radio" name="gev_standje" value="nee"> Nee</label><label><input type="radio" name="gev_standje" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Heeft het last van harde geluiden?</span><div class="radio-group"><label><input type="radio" name="gev_geluiden" value="ja"> Ja</label><label><input type="radio" name="gev_geluiden" value="nee"> Nee</label><label><input type="radio" name="gev_geluiden" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Is het kind perfectionistisch?</span><div class="radio-group"><label><input type="radio" name="gev_perfectionistisch" value="ja"> Ja</label><label><input type="radio" name="gev_perfectionistisch" value="nee"> Nee</label><label><input type="radio" name="gev_perfectionistisch" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Is het kind hulpvaardig?</span><div class="radio-group"><label><input type="radio" name="gev_hulpvaardig" value="ja"> Ja</label><label><input type="radio" name="gev_hulpvaardig" value="nee"> Nee</label><label><input type="radio" name="gev_hulpvaardig" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Wil het alleen zachte kleren aan en heeft het een hekel aan merkjes en labeltjes?</span><div class="radio-group"><label><input type="radio" name="gev_kleren" value="ja"> Ja</label><label><input type="radio" name="gev_kleren" value="nee"> Nee</label><label><input type="radio" name="gev_kleren" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Houdt het kind van veranderingen?</span><div class="radio-group"><label><input type="radio" name="gev_veranderingen" value="ja"> Ja</label><label><input type="radio" name="gev_veranderingen" value="nee"> Nee</label><label><input type="radio" name="gev_veranderingen" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Heeft het tijd nodig om te wennen aan nieuwe situaties?</span><div class="radio-group"><label><input type="radio" name="gev_wennen" value="ja"> Ja</label><label><input type="radio" name="gev_wennen" value="nee"> Nee</label><label><input type="radio" name="gev_wennen" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Voelt het kind stemmingen aan?</span><div class="radio-group"><label><input type="radio" name="gev_stemmingen" value="ja"> Ja</label><label><input type="radio" name="gev_stemmingen" value="nee"> Nee</label><label><input type="radio" name="gev_stemmingen" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Lijkt het kind intuïtief, gaat het af op zijn gevoel?</span><div class="radio-group"><label><input type="radio" name="gev_intuïtief" value="ja"> Ja</label><label><input type="radio" name="gev_intuïtief" value="nee"> Nee</label><label><input type="radio" name="gev_intuïtief" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Is het gevoelig voor pijn?</span><div class="radio-group"><label><input type="radio" name="gev_pijn" value="ja"> Ja</label><label><input type="radio" name="gev_pijn" value="nee"> Nee</label><label><input type="radio" name="gev_pijn" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Heeft het oog voor verdriet van anderen?</span><div class="radio-group"><label><input type="radio" name="gev_verdriet" value="ja"> Ja</label><label><input type="radio" name="gev_verdriet" value="nee"> Nee</label><label><input type="radio" name="gev_verdriet" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Beleeft het gebeurtenissen intensief?</span><div class="radio-group"><label><input type="radio" name="gev_intensief" value="ja"> Ja</label><label><input type="radio" name="gev_intensief" value="nee"> Nee</label><label><input type="radio" name="gev_intensief" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Functioneert het het best zonder dat er anderen bij zijn?</span><div class="radio-group"><label><input type="radio" name="gev_alleen" value="ja"> Ja</label><label><input type="radio" name="gev_alleen" value="nee"> Nee</label><label><input type="radio" name="gev_alleen" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Ruikt uw kind elk vreemd geurtje?</span><div class="radio-group"><label><input type="radio" name="gev_geuren" value="ja"> Ja</label><label><input type="radio" name="gev_geuren" value="nee"> Nee</label><label><input type="radio" name="gev_geuren" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Is uw kind een moeilijke slaper?</span><div class="radio-group"><label><input type="radio" name="gev_slaper" value="ja"> Ja</label><label><input type="radio" name="gev_slaper" value="nee"> Nee</label><label><input type="radio" name="gev_slaper" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Heeft uw kind oog voor detail en merkt het veel op?</span><div class="radio-group"><label><input type="radio" name="gev_detail" value="ja"> Ja</label><label><input type="radio" name="gev_detail" value="nee"> Nee</label><label><input type="radio" name="gev_detail" value="soms"> Soms</label></div></div>
+      <div class="gev-row"><span class="gev-q">Stelt het veel vragen?</span><div class="radio-group"><label><input type="radio" name="gev_vragen" value="ja"> Ja</label><label><input type="radio" name="gev_vragen" value="nee"> Nee</label><label><input type="radio" name="gev_vragen" value="soms"> Soms</label></div></div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         11. MEDISCHE GEGEVENS
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Medische gegevens">
+      <div class="section-title">Medische gegevens</div>
+
+      <div class="subsection">
+        <div class="subsection-title">Huisarts</div>
+        <div class="two-col">
+          <div class="field">
+            <label for="arts_naam">Naam en voorletters</label>
+            <input type="text" id="arts_naam" name="arts_naam">
+          </div>
+          <div class="field">
+            <label>Aanhef</label>
+            <div class="radio-group" style="margin-top:9px">
+              <label><input type="radio" name="arts_aanhef" value="dhr"> Dhr.</label>
+              <label><input type="radio" name="arts_aanhef" value="mw"> Mw.</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="arts_adres">Adres</label>
+          <input type="text" id="arts_adres" name="arts_adres">
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="arts_postcode">Postcode</label>
+            <input type="text" id="arts_postcode" name="arts_postcode">
+          </div>
+          <div class="field">
+            <label for="arts_woonplaats">Woonplaats</label>
+            <input type="text" id="arts_woonplaats" name="arts_woonplaats">
+          </div>
+        </div>
+        <div class="field">
+          <label for="arts_telefoon">Telefoon</label>
+          <input type="tel" id="arts_telefoon" name="arts_telefoon">
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Verzekering</div>
+        <div class="two-col">
+          <div class="field">
+            <label for="verzekering_naam">Ziektekostenverzekeraar</label>
+            <input type="text" id="verzekering_naam" name="verzekering_naam">
+          </div>
+          <div class="field">
+            <label for="verzekering_polis">Polisnummer</label>
+            <input type="text" id="verzekering_polis" name="verzekering_polis">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="arts_op_hoogte">Is uw huisarts op de hoogte van de aanmelding? Zo ja, wat is zijn/haar visie?</label>
+        <textarea id="arts_op_hoogte" name="arts_op_hoogte"></textarea>
+      </div>
+      <div class="field">
+        <label for="medisch_behandeling">Is uw kind onder behandeling van een hulpverlener / (medisch) specialist geweest? (waarvoor, bij wie, wanneer)</label>
+        <textarea id="medisch_behandeling" name="medisch_behandeling"></textarea>
+      </div>
+      <div class="field">
+        <label for="medisch_medicijnen">Gebruikt(e) uw kind medicijnen? Zo ja, welke, wanneer en met welk resultaat?</label>
+        <textarea id="medisch_medicijnen" name="medisch_medicijnen"></textarea>
+      </div>
+      <div class="field">
+        <label for="medisch_allergie">Heeft uw kind last van allergieën of eczeem?</label>
+        <textarea id="medisch_allergie" name="medisch_allergie" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="medisch_opmerkingen">Eventuele opmerkingen die van belang kunnen zijn met betrekking tot de aanmelding</label>
+        <textarea id="medisch_opmerkingen" name="medisch_opmerkingen"></textarea>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════
+         12. VERWIJZING
+         ════════════════════════════════════════ -->
+    <div class="section" data-section="Verwijzing">
+      <div class="section-title">Verwijzing</div>
+      <div class="field">
+        <label for="verwijzing_door">Verwezen door / op aanraden van</label>
+        <input type="text" id="verwijzing_door" name="verwijzing_door">
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="verwijzing_plaats">Plaats</label>
+          <input type="text" id="verwijzing_plaats" name="verwijzing_plaats">
+        </div>
+        <div class="field">
+          <label for="verwijzing_datum">Datum</label>
+          <input type="date" id="verwijzing_datum" name="verwijzing_datum">
+        </div>
+      </div>
+    </div>
+
+  </form><!-- /vragenlijst -->
+
+  <!-- ════════════════════════════════════════
+       ACTIONS
+       ════════════════════════════════════════ -->
+  <div class="actions-card">
+    <h2>Vragenlijst versturen</h2>
+    <p>
+      Klik op <strong>Verstuur per e-mail</strong> om uw antwoorden te kopiëren en een e-mail naar Lucette te openen.
+      Plak daarna de gekopieerde tekst in de e-mail. Of gebruik <strong>Download als .txt</strong> om een tekstbestand op te slaan dat u als bijlage kunt meesturen.
+    </p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" onclick="sendEmail()">Verstuur per e-mail</button>
+      <button type="button" class="btn btn-ghost" onclick="downloadTxt()">Download als .txt</button>
+    </div>
+
+    <div class="btn-row" style="margin-top:6px">
+      <button type="button" class="btn btn-secondary" onclick="toggleLinkPanel()">Genereer link om later verder te gaan</button>
+    </div>
+
+    <div class="link-panel" id="linkPanel">
+      <p><strong>Kopieer deze link</strong> en mail of sla hem op. Uw antwoorden zijn opgeslagen in de link.</p>
+      <input type="text" id="shareUrl" readonly onclick="this.select()">
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="copyLink()">Kopieer link</button>
+        <button type="button" class="btn btn-ghost" onclick="emailLink()">Mail link naar mezelf</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-footer">
+    Hartelijk dank voor het invullen van de lijst.<br>
+    Met de gegevens wordt zorgvuldig omgegaan conform de beroepscode.
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+const STORAGE_KEY = 'bengl_vragenlijst_v1';
+const EMAIL_TO    = 'lucette@bengl.nl';
+
+// ── Collect all form data into a plain object ──────────────────────
+function collectData() {
+  const form = document.getElementById('vragenlijst');
+  const data = {};
+  const seen = new Set();
+  for (const el of form.elements) {
+    if (!el.name || seen.has(el.name)) continue;
+    seen.add(el.name);
+    if (el.type === 'radio') {
+      data[el.name] = form.elements[el.name].value;
+    } else if (el.type === 'checkbox') {
+      data[el.name] = el.checked;
+    } else {
+      data[el.name] = el.value;
+    }
+  }
+  return data;
+}
+
+// ── Restore form from a plain object ──────────────────────────────
+function restoreData(data) {
+  const form = document.getElementById('vragenlijst');
+  for (const [key, val] of Object.entries(data)) {
+    const el = form.elements[key];
+    if (!el) continue;
+    if (el instanceof RadioNodeList) {
+      el.value = val;
+    } else if (el.type === 'checkbox') {
+      el.checked = val === true || val === 'true';
+    } else {
+      el.value = val || '';
+    }
+  }
+}
+
+// ── Build readable text from the form ─────────────────────────────
+const GEV_LABELS = {
+  gev_schrikken:'Schrikt het snel?', gev_standje:'Heeft het moeite met een standje?',
+  gev_geluiden:'Heeft het last van harde geluiden?', gev_perfectionistisch:'Is het kind perfectionistisch?',
+  gev_hulpvaardig:'Is het kind hulpvaardig?', gev_kleren:'Wil het alleen zachte kleren aan (hekel aan merkjes/labeltjes)?',
+  gev_veranderingen:'Houdt het kind van veranderingen?', gev_wennen:'Heeft het tijd nodig om te wennen aan nieuwe situaties?',
+  gev_stemmingen:'Voelt het kind stemmingen aan?', 'gev_intuïtief':'Lijkt het kind intuïtief, gaat het af op zijn gevoel?',
+  gev_pijn:'Is het gevoelig voor pijn?', gev_verdriet:'Heeft het oog voor verdriet van anderen?',
+  gev_intensief:'Beleeft het gebeurtenissen intensief?', gev_alleen:'Functioneert het het best zonder anderen?',
+  gev_geuren:'Ruikt uw kind elk vreemd geurtje?', gev_slaper:'Is uw kind een moeilijke slaper?',
+  gev_detail:'Heeft uw kind oog voor detail en merkt het veel op?', gev_vragen:'Stelt het veel vragen?'
+};
+
+const CHECK_LABELS = {
+  bew_onhandig:'Onhandig', bew_struikelen:'Veel struikelen en vallen', bew_schrijven:'Onleesbaar schrijven',
+  bew_moe:'Snel moe', bew_fietsen:'Laat leren fietsen', bew_zwemmen:'Deed lang over zwemdiploma',
+  bew_gooien:'Moeite met gooien en vangen', bew_hand:'Moeite met kiezen voorkeurshand'
+};
+
+function yesno(v) {
+  return {ja:'Ja', nee:'Nee', soms:'Soms', nvt:'N.v.t.', dhr:'Dhr.', mw:'Mw.'}[v] || v || '—';
+}
+
+function formatAnswers() {
+  const d = collectData();
+  const L = [];
+  const hr = (n = 56) => '─'.repeat(n);
+
+  L.push('VRAGENLIJST VOOR OUDERS');
+  L.push('Bewegen en Groeien met Lucette (BenGL)');
+  L.push(hr());
+  L.push(`Ingevuld op: ${new Date().toLocaleDateString('nl-NL')}`);
+
+  function row(label, val) { L.push(`  ${label}: ${val || '—'}`); }
+  function ta(label, val)  {
+    if (val && val.trim()) { L.push(`  ${label}:`); val.trim().split('\n').forEach(l => L.push(`    ${l}`)); }
+    else { L.push(`  ${label}: —`); }
+  }
+  function hdr(t) { L.push('', t.toUpperCase(), hr(t.length)); }
+  function sub(t) { L.push('', `  [${t}]`); }
+
+  // 1. Kind
+  hdr('Gegevens betreffende het kind');
+  row('Voornaam/namen', d.kind_voornaam); row('Roepnaam', d.kind_roepnaam);
+  row('Achternaam', d.kind_achternaam); row('Geboortedatum', d.kind_geboortedatum);
+  row('BSN', d.kind_bsn); row('Adres', d.kind_adres);
+  row('Postcode', d.kind_postcode); row('Woonplaats', d.kind_woonplaats);
+  row('Telefoon', d.kind_telefoon); row('E-mail', d.kind_email);
+
+  // 2. Gezin
+  hdr('Gegevens betreffende het gezin');
+  sub('Moeder / verzorgster');
+  row('Roepnaam', d.moeder_roepnaam); row('Achternaam', d.moeder_achternaam);
+  row('Geboortedatum', d.moeder_geboortedatum); row('Adres', d.moeder_adres);
+  row('Postcode', d.moeder_postcode); row('Woonplaats', d.moeder_woonplaats);
+  row('Telefoon', d.moeder_telefoon); row('Mobiel', d.moeder_mobiel);
+  row('E-mail', d.moeder_email); row('Opleiding + Beroep', d.moeder_opleiding);
+  sub('Vader / verzorger');
+  row('Roepnaam', d.vader_roepnaam); row('Achternaam', d.vader_achternaam);
+  row('Geboortedatum', d.vader_geboortedatum); row('Adres', d.vader_adres);
+  row('Postcode', d.vader_postcode); row('Woonplaats', d.vader_woonplaats);
+  row('Telefoon', d.vader_telefoon); row('Mobiel', d.vader_mobiel);
+  row('E-mail', d.vader_email); row('Opleiding + Beroep', d.vader_opleiding);
+  sub('Broers / zussen');
+  for (let i = 1; i <= 5; i++) {
+    const n = d['sibling_naam_' + i], g = d['sibling_geb_' + i];
+    if (n || g) row(`Kind ${i}`, `${n || '—'}  (geb. ${g || '—'})`);
+  }
+  sub('Gezinssamenstelling');
+  ta('Beschrijving', d.gezinssamenstelling);
+  sub('In geval van scheiding');
+  row('Sinds wanneer', d.scheiding_sinds);
+  row('Beide ouders ouderlijk gezag', yesno(d.ouderlijk_gezag));
+  ta('Omgangsregeling', d.omgangsregeling);
+  sub('Overlijden');
+  ta('Wie en wanneer', d.overlijden_wie);
+  row('Relatie met overledene', d.overlijden_relatie);
+  row('Kind bij uitvaart aanwezig', yesno(d.overlijden_meegemaakt));
+
+  // 3. School
+  hdr('Gegevens betreffende school');
+  row('Naam school', d.school_naam); row('Type onderwijs', d.school_type);
+  row('Adres/postcode/plaats', d.school_adres); row('Telefoon', d.school_telefoon);
+  row('Groep', d.school_groep); row('Leerkracht(en)', d.school_leerkracht);
+  row('Doorlopen groepen', d.school_groepen);
+  ta('Schoolwisselingen', d.school_wisselingen);
+  ta('Hoe ervaart kind de school', d.school_kind_beleving);
+  ta('Relatie met leerkracht', d.school_rel_leerkracht);
+  ta('Relatie met andere kinderen', d.school_rel_kinderen);
+  ta('Hoe ervaart u de schoolsituatie', d.school_ouder_beleving);
+  ta('Bijzonderheden school', d.school_bijzonderheden);
+
+  // 4. Vrije tijd
+  hdr('Gegevens betreffende vrije tijd');
+  ta('Opvang buiten school', d.opvang_wie_waar);
+  ta('Hoe ervaart kind opvang', d.opvang_beleving);
+  ta('Activiteiten / clubs', d.activiteiten);
+  ta('Speelwijze', d.speelwijze);
+  ta('Vaste vriendjes', d.vriendjes);
+  ta('Voorkeur speelgoed', d.speelgoed_voorkeur);
+  ta('Omgang met eigen spullen', d.eigen_spullen);
+  ta('Gezamenlijke activiteiten', d.gezin_activiteiten);
+
+  // 5. Reden van aanmelding
+  hdr('Gegevens betreffende de reden van aanmelding');
+  sub('Emotionele problemen');
+  row('Emotionele problemen', yesno(d.emotioneel));
+  ta('Reden aanmelding (emotioneel)', d.emotioneel_reden);
+  row('Hoe lang', d.emotioneel_hoe_lang);
+  ta('Beleving kind', d.emotioneel_kind_beleving);
+  ta('Oorzaak', d.emotioneel_oorzaak);
+  ta('Al gedaan / resultaat', d.emotioneel_gedaan);
+  sub('Leerproblemen');
+  row('Leerproblemen', yesno(d.leer));
+  ta('Reden aanmelding (leer)', d.leer_reden);
+  row('Moeite met klokkijken', yesno(d.leer_klok));
+  row('Moeite met dagen van de week', yesno(d.leer_dagen));
+  row('Zegt anders dan er staat bij lezen', yesno(d.leer_anders_lezen));
+  row('Letters/cijfers achterstevoren', yesno(d.leer_achterstevoren));
+  row('Hoe lang', d.leer_hoe_lang);
+  ta('Beleving kind', d.leer_kind_beleving);
+  ta('Oorzaak', d.leer_oorzaak);
+  ta('Al gedaan / resultaat', d.leer_gedaan);
+  ta('Leerproblemen in de familie', d.leer_familie);
+  sub('Concentratieproblemen');
+  row('Concentratieproblemen', yesno(d.concentratie));
+  ta('Reden aanmelding (concentratie)', d.concentratie_reden);
+  row('Hoe lang', d.concentratie_hoe_lang);
+  ta('Beleving kind', d.concentratie_kind_beleving);
+  ta('Oorzaak', d.concentratie_oorzaak);
+  ta('Al gedaan / resultaat', d.concentratie_gedaan);
+  ta('Levendige fantasie', d.concentratie_fantasie);
+  ta('Creatief met ideeën en taal', d.concentratie_creatief);
+  sub('Bewegingsproblemen');
+  row('Bewegingsproblemen', yesno(d.beweging));
+  const bew = Object.entries(CHECK_LABELS).filter(([k]) => d[k] === true).map(([,v]) => v);
+  row('Geobserveerde kenmerken', bew.length ? bew.join(', ') : '—');
+  row('Wagenziekte', yesno(d.bew_wagenziekte));
+  row('Hoe lang', d.beweging_hoe_lang);
+  ta('Beleving kind', d.beweging_kind_beleving);
+  ta('Oorzaak', d.beweging_oorzaak);
+  ta('Al gedaan / resultaat', d.beweging_gedaan);
+  sub('Lichamelijke problemen');
+  row('Lichamelijke problemen', yesno(d.lichamelijk));
+  row('Buikpijn / moeite met ontlasting', yesno(d.lich_buikpijn));
+  row('Hoofdpijn / belemmert functioneren', yesno(d.lich_hoofdpijn));
+  row('Hoe lang', d.lichamelijk_hoe_lang);
+  ta('Beleving kind', d.lichamelijk_kind_beleving);
+  ta('Oorzaak', d.lichamelijk_oorzaak);
+  ta('Al gedaan / resultaat', d.lichamelijk_gedaan);
+
+  // 6. Diagnose
+  hdr('Gegevens over een eventuele diagnose');
+  ta('Diagnose', d.diagnose);
+  row('Wanneer en door wie', d.diagnose_wanneer_wie);
+  row('Medicatie', d.diagnose_medicatie);
+  ta('Gevolgde therapie', d.diagnose_therapie);
+
+  // 7. Gedrag en beleving
+  hdr('Gegevens over het gedrag en de beleving van het kind');
+  ta('Omgang nieuwe situaties', d.gedrag_nieuw);
+  ta('Stemming / humeur', d.gedrag_stemming);
+  ta('Omgang met verlies / frustratie', d.gedrag_verlies);
+  ta('Angsten', d.gedrag_angst);
+  ta('Vindingrijk / creatief', d.gedrag_creatief);
+  ta('Kwaliteiten / talenten', d.gedrag_talenten);
+  ta('Absolute hekel aan', d.gedrag_hekel);
+
+  // 8. Ontwikkeling
+  hdr('Gegevens betreffende de ontwikkeling van het kind');
+  ta('Zwangerschap', d.ontw_zwangerschap);
+  row('Afwijkende ligging / weinig vruchtwater', yesno(d.ontw_ligging));
+  ta('Bevalling', d.ontw_bevalling);
+  ta('Eerste maanden / specialisten', d.ontw_eerste_maanden);
+  row('Refluxklachten', yesno(d.ontw_reflux));
+  ta('Voorkeurshouding / asymmetrie hoofd', d.ontw_voorkeur_houding);
+  row('Overstrekt tot leeftijd', d.ontw_overstrekt);
+  row('Osteopaat bezocht', yesno(d.ontw_osteopaat));
+  ta('Temperament als baby', d.ontw_temperament);
+  ta('Voeding en slaap', d.ontw_voeding_slaap);
+  ta('Motorische ontwikkeling', d.ontw_motorisch);
+  row('Gekropen / hoe lang', d.ontw_kruipen);
+  row('Loopt/liep op de tenen', yesno(d.ontw_tenen));
+  row('Oorontstekingen', yesno(d.ontw_oor));
+  ta('Spraak- / taalontwikkeling', d.ontw_spraak);
+  ta('Zindelijkheidstraining', d.ontw_zindelijk);
+  ta('Seksuele ontwikkeling / voorlichting', d.ontw_seksueel);
+  row('Moeite met aankleden', yesno(d.ontw_aankleden));
+  ta('Omgang met regels en normen', d.ontw_regels);
+  ta('Vervelende ervaringen', d.ontw_vervelend);
+
+  // 9. Sociale ontwikkeling
+  hdr('Gegevens betreffende de sociale ontwikkeling');
+  ta('Omgang met naaste personen', d.sociaal_naasten);
+  ta('Omgang met leeftijdgenoten', d.sociaal_leeftijdgenoten);
+
+  // 10. Gevoeligheid
+  hdr('Gegevens betreffende de gevoeligheid van het kind');
+  for (const [k, label] of Object.entries(GEV_LABELS)) {
+    row(label, yesno(d[k]));
+  }
+
+  // 11. Medische gegevens
+  hdr('Medische gegevens');
+  sub('Huisarts');
+  row('Naam en voorletters', `${d.arts_aanhef ? yesno(d.arts_aanhef) + ' ' : ''}${d.arts_naam || ''}`);
+  row('Adres', d.arts_adres);
+  row('Postcode', d.arts_postcode); row('Woonplaats', d.arts_woonplaats);
+  row('Telefoon', d.arts_telefoon);
+  sub('Verzekering');
+  row('Ziektekostenverzekeraar', d.verzekering_naam);
+  row('Polisnummer', d.verzekering_polis);
+  ta('Huisarts op de hoogte / visie', d.arts_op_hoogte);
+  ta('Behandeling door specialist', d.medisch_behandeling);
+  ta('Medicijngebruik', d.medisch_medicijnen);
+  ta('Allergieën / eczeem', d.medisch_allergie);
+  ta('Opmerkingen', d.medisch_opmerkingen);
+
+  // 12. Verwijzing
+  hdr('Verwijzing');
+  row('Verwezen door / aanraden van', d.verwijzing_door);
+  row('Plaats', d.verwijzing_plaats);
+  row('Datum', d.verwijzing_datum);
+
+  L.push('', hr(), 'Hartelijk dank voor het invullen van de lijst.');
+  L.push('Met de gegevens wordt zorgvuldig omgegaan conform de beroepscode.');
+
+  return L.join('\n');
+}
+
+// ── Send email: copy text + open mailto ───────────────────────────
+function sendEmail() {
+  const text  = formatAnswers();
+  const naam  = document.getElementById('kind_roepnaam').value.trim() ||
+                document.getElementById('kind_voornaam').value.trim() || '';
+  const subj  = naam ? `Vragenlijst voor ouders – ${naam}` : 'Vragenlijst voor ouders';
+  const mailto = `mailto:${EMAIL_TO}?subject=${encodeURIComponent(subj)}`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      window.location.href = mailto;
+      showToast('Antwoorden gekopieerd — plak ze in de e-mail die nu opent.');
+    }).catch(() => fallbackCopy(text, mailto));
+  } else {
+    fallbackCopy(text, mailto);
+  }
+}
+
+function fallbackCopy(text, mailto) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); showToast('Antwoorden gekopieerd — plak ze in de e-mail die nu opent.'); }
+  catch { showToast('Kon niet kopiëren — gebruik de download-knop als alternatief.'); }
+  document.body.removeChild(ta);
+  window.location.href = mailto;
+}
+
+// ── Download as .txt ──────────────────────────────────────────────
+function downloadTxt() {
+  const text = formatAnswers();
+  const naam = document.getElementById('kind_roepnaam').value.trim() ||
+               document.getElementById('kind_voornaam').value.trim() || 'kind';
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `vragenlijst_${naam.replace(/\s+/g, '_')}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Tekstbestand gedownload.');
+}
+
+// ── Save-link panel ───────────────────────────────────────────────
+function generateUrl() {
+  const json    = JSON.stringify(collectData());
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  return `${location.origin}${location.pathname}?data=${encoded}`;
+}
+
+function toggleLinkPanel() {
+  const panel = document.getElementById('linkPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    document.getElementById('shareUrl').value = generateUrl();
+  }
+}
+
+function copyLink() {
+  const url = document.getElementById('shareUrl').value;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => showToast('Link gekopieerd!'));
+  } else {
+    const el = document.getElementById('shareUrl');
+    el.select();
+    document.execCommand('copy');
+    showToast('Link gekopieerd!');
+  }
+}
+
+function emailLink() {
+  const url  = document.getElementById('shareUrl').value;
+  const body = `Gebruik deze link om verder te gaan met de vragenlijst voor BenGL:\n\n${url}`;
+  window.location.href = `mailto:?subject=${encodeURIComponent('Vragenlijst BenGL – link')}&body=${encodeURIComponent(body)}`;
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ── Progress bar ──────────────────────────────────────────────────
+function updateProgress() {
+  const inputs = [...document.getElementById('vragenlijst')
+    .querySelectorAll('input:not([type=radio]):not([type=checkbox]),textarea')];
+  const filled = inputs.filter(el => el.value.trim() !== '').length;
+  const pct    = inputs.length ? Math.round((filled / inputs.length) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent =
+    `${pct}% ingevuld (${filled} van ${inputs.length} tekstvelden)`;
+}
+
+// ── Auto-save (debounced) ─────────────────────────────────────────
+let saveTimer;
+document.getElementById('vragenlijst').addEventListener('input', () => {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+  }, 600);
+  updateProgress();
+});
+document.getElementById('vragenlijst').addEventListener('change', updateProgress);
+
+// ── Init: load from URL param, then localStorage ──────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const params  = new URLSearchParams(location.search);
+  const encoded = params.get('data');
+  if (encoded) {
+    try {
+      restoreData(JSON.parse(decodeURIComponent(escape(atob(encoded)))));
+      showToast('Uw opgeslagen antwoorden zijn geladen vanuit de link.');
+    } catch { /* corrupt param — ignore */ }
+  } else {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        restoreData(JSON.parse(saved));
+        showToast('Uw eerdere antwoorden zijn hersteld.');
+      } catch { /* corrupt storage — ignore */ }
+    }
+  }
+  updateProgress();
+});
+</script>
+</body>
+</html>
