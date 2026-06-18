@@ -1,11 +1,52 @@
-<html>
+<!DOCTYPE html>
+<html lang="nl">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bewegen en Groeien met Lucette (BenGL)</title>
+    <style>
+      :root {
+        --green: #5b8a6e;
+        --green-dark: #3a5f4a;
+        --text: #2d3748;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { height: 100%; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        color: var(--text);
+        background: #f0f4f1;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+        line-height: 1.6;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+      .card img { width: 100%; max-width: 480px; height: auto; }
+      .card p { font-size: 1.05rem; color: #4b5563; }
+      .card a {
+        color: var(--green-dark);
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 2px solid var(--green);
+      }
+      .card a:hover { color: var(--green); }
+    </style>
   </head>
   <body>
-    <h1>Bewegen en Groeien met Lucette</h1>
-    <p>
-      Neem <a href="mailto:lucette@bengl.nl">contact</a> op voor meer informatie.
-    </p>
+    <main class="card">
+      <img src="BenGL-logo-tekst.png" alt="Bewegen en Groeien met Lucette">
+      <p>
+        Neem <a href="mailto:lucette@bengl.nl">contact</a> op voor meer informatie.
+      </p>
+    </main>
   </body>
 </html>
