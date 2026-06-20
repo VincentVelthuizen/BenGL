@@ -1243,8 +1243,8 @@
   <div class="actions-card">
     <h2>Vragenlijst versturen</h2>
     <p>
-      Klik op <strong>Verstuur per e-mail</strong> om uw antwoorden te kopiëren en een e-mail naar Lucette te openen.
-      Plak daarna de gekopieerde tekst in de e-mail. Of gebruik <strong>Download als .txt</strong> om een tekstbestand op te slaan dat u als bijlage kunt meesturen.
+      Klik op <strong>Verstuur per e-mail</strong> om een e-mail naar Lucette te openen met uw antwoorden al ingevuld in de berichttekst.
+      Controleer de inhoud en klik op verzenden. Of gebruik <strong>Download als .txt</strong> om een tekstbestand op te slaan dat u als bijlage kunt meesturen.
     </p>
     <div class="btn-row">
       <button type="button" class="btn btn-primary" onclick="sendEmail()">Verstuur per e-mail</button>
@@ -1645,34 +1645,24 @@ function formatAnswers() {
   return L.join('\n');
 }
 
-// ── Send email: copy text + open mailto ───────────────────────────
+// ── Send email: mailto with pre-filled body ───────────────────────
 function sendEmail() {
-  const text  = formatAnswers();
-  const naam  = document.getElementById('kind_roepnaam').value.trim() ||
-                document.getElementById('kind_voornaam').value.trim() || '';
-  const subj  = naam ? `Vragenlijst voor ouders – ${naam}` : 'Vragenlijst voor ouders';
-  const mailto = `mailto:${EMAIL_TO}?subject=${encodeURIComponent(subj)}`;
+  const text = formatAnswers();
+  const naam = document.getElementById('kind_roepnaam').value.trim() ||
+               document.getElementById('kind_voornaam').value.trim() || '';
+  const subj = naam ? `Vragenlijst voor ouders – ${naam}` : 'Vragenlijst voor ouders';
 
+  // Build mailto with body pre-filled. Most modern email clients handle this
+  // well; if the body gets clipped the clipboard copy below is a safety net.
+  const mailto = `mailto:${EMAIL_TO}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(text)}`;
+
+  // Silently copy to clipboard as a backup in case the email client truncates.
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      window.location.href = mailto;
-      showToast('Antwoorden gekopieerd — plak ze in de e-mail die nu opent.');
-    }).catch(() => fallbackCopy(text, mailto));
-  } else {
-    fallbackCopy(text, mailto);
+    navigator.clipboard.writeText(text).catch(() => {});
   }
-}
 
-function fallbackCopy(text, mailto) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-  document.body.appendChild(ta);
-  ta.focus(); ta.select();
-  try { document.execCommand('copy'); showToast('Antwoorden gekopieerd — plak ze in de e-mail die nu opent.'); }
-  catch { showToast('Kon niet kopiëren — gebruik de download-knop als alternatief.'); }
-  document.body.removeChild(ta);
   window.location.href = mailto;
+  showToast('E-mail wordt geopend met uw antwoorden ingevuld. Controleer de inhoud en klik op verzenden.');
 }
 
 // ── Download as .txt ──────────────────────────────────────────────
